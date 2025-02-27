@@ -49,18 +49,30 @@ func Size(v uint64) uint64 {
 
 // Contains returns true if slice contains complete varuint64.
 func Contains(b []byte) bool {
-	if len(b) == 0 {
-		return false
-	}
+	// The most common case in networking (usually much more bytes are received), so it is checked first.
 	if len(b) >= MaxSize {
 		return true
 	}
-	for _, v := range b {
-		if v&followMask == 0 {
-			return true
-		}
+	switch len(b) {
+	case 0:
+		return false
+	case 1:
+		return b[0]&followMask == 0
+	case 2:
+		return b[0]&b[1]&followMask == 0
+	case 3:
+		return b[0]&b[1]&b[2]&followMask == 0
+	case 4:
+		return b[0]&b[1]&b[2]&b[3]&followMask == 0
+	case 5:
+		return b[0]&b[1]&b[2]&b[3]&b[4]&followMask == 0
+	case 6:
+		return b[0]&b[1]&b[2]&b[3]&b[4]&b[5]&followMask == 0
+	case 7:
+		return b[0]&b[1]&b[2]&b[3]&b[4]&b[5]&b[6]&followMask == 0
+	default:
+		return b[0]&b[1]&b[2]&b[3]&b[4]&b[5]&b[6]&b[7]&followMask == 0
 	}
-	return false
 }
 
 // Put puts varuint64 in the buffer.
