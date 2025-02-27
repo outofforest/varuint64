@@ -159,6 +159,10 @@ func TestParse(t *testing.T) {
 	requireT.EqualValues(2, n)
 	requireT.EqualValues(max1Byte+1, v)
 
+	v, n = Parse([]byte{followMask, 0x01, 0x80})
+	requireT.EqualValues(2, n)
+	requireT.EqualValues(max1Byte+1, v)
+
 	v, n = Parse([]byte{0xFF, numberMask})
 	requireT.EqualValues(2, n)
 	requireT.EqualValues(max2Bytes, v)
@@ -171,7 +175,15 @@ func TestParse(t *testing.T) {
 	requireT.EqualValues(3, n)
 	requireT.EqualValues(max3Bytes, v)
 
+	v, n = Parse([]byte{0xFF, 0xFF, numberMask, 0x80})
+	requireT.EqualValues(3, n)
+	requireT.EqualValues(max3Bytes, v)
+
 	v, n = Parse([]byte{followMask, followMask, followMask, 0x01})
+	requireT.EqualValues(4, n)
+	requireT.EqualValues(max3Bytes+1, v)
+
+	v, n = Parse([]byte{followMask, followMask, followMask, 0x01, 0x80})
 	requireT.EqualValues(4, n)
 	requireT.EqualValues(max3Bytes+1, v)
 
@@ -179,7 +191,15 @@ func TestParse(t *testing.T) {
 	requireT.EqualValues(4, n)
 	requireT.EqualValues(max4Bytes, v)
 
+	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, numberMask, 0x80})
+	requireT.EqualValues(4, n)
+	requireT.EqualValues(max4Bytes, v)
+
 	v, n = Parse([]byte{followMask, followMask, followMask, followMask, 0x01})
+	requireT.EqualValues(5, n)
+	requireT.EqualValues(max4Bytes+1, v)
+
+	v, n = Parse([]byte{followMask, followMask, followMask, followMask, 0x01, 0x80})
 	requireT.EqualValues(5, n)
 	requireT.EqualValues(max4Bytes+1, v)
 
@@ -187,7 +207,15 @@ func TestParse(t *testing.T) {
 	requireT.EqualValues(5, n)
 	requireT.EqualValues(max5Bytes, v)
 
+	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, 0xFF, numberMask, 0x80})
+	requireT.EqualValues(5, n)
+	requireT.EqualValues(max5Bytes, v)
+
 	v, n = Parse([]byte{followMask, followMask, followMask, followMask, followMask, 0x01})
+	requireT.EqualValues(6, n)
+	requireT.EqualValues(max5Bytes+1, v)
+
+	v, n = Parse([]byte{followMask, followMask, followMask, followMask, followMask, 0x01, 0x80})
 	requireT.EqualValues(6, n)
 	requireT.EqualValues(max5Bytes+1, v)
 
@@ -195,7 +223,15 @@ func TestParse(t *testing.T) {
 	requireT.EqualValues(6, n)
 	requireT.EqualValues(max6Bytes, v)
 
+	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, numberMask, 0x80})
+	requireT.EqualValues(6, n)
+	requireT.EqualValues(max6Bytes, v)
+
 	v, n = Parse([]byte{followMask, followMask, followMask, followMask, followMask, followMask, 0x01})
+	requireT.EqualValues(7, n)
+	requireT.EqualValues(max6Bytes+1, v)
+
+	v, n = Parse([]byte{followMask, followMask, followMask, followMask, followMask, followMask, 0x01, 0x80})
 	requireT.EqualValues(7, n)
 	requireT.EqualValues(max6Bytes+1, v)
 
@@ -203,11 +239,23 @@ func TestParse(t *testing.T) {
 	requireT.EqualValues(7, n)
 	requireT.EqualValues(max7Bytes, v)
 
+	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, numberMask, 0x80})
+	requireT.EqualValues(7, n)
+	requireT.EqualValues(max7Bytes, v)
+
 	v, n = Parse([]byte{followMask, followMask, followMask, followMask, followMask, followMask, followMask, 0x01})
 	requireT.EqualValues(8, n)
 	requireT.EqualValues(max7Bytes+1, v)
 
+	v, n = Parse([]byte{followMask, followMask, followMask, followMask, followMask, followMask, followMask, 0x01, 0x80})
+	requireT.EqualValues(8, n)
+	requireT.EqualValues(max7Bytes+1, v)
+
 	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, numberMask})
+	requireT.EqualValues(8, n)
+	requireT.EqualValues(max8Bytes, v)
+
+	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, numberMask, 0x80})
 	requireT.EqualValues(8, n)
 	requireT.EqualValues(max8Bytes, v)
 
@@ -216,7 +264,16 @@ func TestParse(t *testing.T) {
 	requireT.EqualValues(9, n)
 	requireT.EqualValues(max8Bytes+1, v)
 
+	v, n = Parse([]byte{followMask, followMask, followMask, followMask, followMask, followMask, followMask, followMask,
+		0x01, 0x80})
+	requireT.EqualValues(9, n)
+	requireT.EqualValues(max8Bytes+1, v)
+
 	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF})
+	requireT.EqualValues(9, n)
+	requireT.EqualValues(uint64(math.MaxUint64), v)
+
+	v, n = Parse([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x80})
 	requireT.EqualValues(9, n)
 	requireT.EqualValues(uint64(math.MaxUint64), v)
 }
